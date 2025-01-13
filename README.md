@@ -1,10 +1,6 @@
-## Requesting And Store Data Using the Strava API
+## Request And Store Data using the Strava API
 
 This application is designed to requests personnal data through the Strava API.
-
-<p align="center">
-  <img src="images/strava.png?raw=true" width="150">
-</p>
 
 Before requesting your data, one needs its:
  - client_id
@@ -34,3 +30,7 @@ The application is set to download the data concerning 3 marathons, I have run o
 As well as all activities during the 16 weeks preceding the marathons. 
 
 The data will be stored in [./data](https://github.com/NicoMrs/StravaProject/tree/main/data).
+
+<p align="center">
+  <img src="images/strava.png?raw=true" width="150">
+</p>

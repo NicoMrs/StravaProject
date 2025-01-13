@@ -6,69 +6,40 @@ Created on Sun Oct 29 08:19:46 2023
 """
 
 import json
-import os
 import requests
-import time
+from packages.timing import Date
+
+__all__ = ['get_activities']
 
 
-accessToken = "e50a62114af364414a571e6d3e9af4ea057f6d58"
-
-
-#
-## GET ALL ACTIVITIES
-#
-
-def acitivities_from_page(access_token, page_number):
-    """
-    Get all activities from page_number
-    """
-    
-    bearer_header = "Bearer " + str(access_token)
-    activites_url = "https://www.strava.com/api/v3/athlete/activities"
+def get_activities(access_token, before, after, per_page = 100):
+    """ Return all activities from page_number """
     header = {'Authorization': 'Bearer ' + access_token}
-    param = {'per_page': 200, 'page':  page_number}
-    activities = requests.get(activites_url, headers=header, params=param).json()
-    
+    param = {'per_page': per_page, 'page': 1, 'before': before, 'after': after}
+    activities = requests.get(url="https://www.strava.com/api/v3/athlete/activities",
+                              headers=header,
+                              params=param).json()
+
     return activities
 
-activities = acitivities_from_page(accessToken, 1)
 
+if __name__ == '__main__':
+    access_token = "28809100886bf15dac680647dca65341a45bd5ea"
 
-# Save JSON file
-with open('activities.json', 'w') as outfile:
-  json.dump(activities, outfile)
+    marathons = []
 
-## Get all activities
+    hamburg = Date(2022, 4, 24)
+    activity = get_activities(access_token, before=hamburg.tolerance_up, after=hamburg.tolerance_down)
+    marathons.append(activity)
 
-# for i in range(1,5):
-    
-#     activities = acitivities_from_page(accessToken, i)
-#     # Save JSON file
-#     with open('activities{0}.json'.format(i), 'w') as outfile:
-#       json.dump(activities, outfile)
-    
+    valence = Date(2022, 12, 4)
+    activity = get_activities(access_token, before=valence.tolerance_up, after=valence.tolerance_down)
+    marathons.append(activity)
 
-#
-## GET ACTIVITIES BY ID
-#
+    rotterdam = Date(2024, 4, 14)
+    activity = get_activities(access_token, before=rotterdam.tolerance_up, after=rotterdam.tolerance_down)
+    marathons.append(activity)
 
-# GET /activities/{id}/laps
-
-def laps_from_activity(activity_id, access_token):
-    
-    bearer_header = "Bearer " + str(access_token)
-    strava_activity_url = "https://www.strava.com/api/v3/activities/" + str(activity_id) + "/laps"
-    headers = {'Content-Type': 'application/json', 'Authorization': bearer_header}
-    response = requests.get(strava_activity_url, headers=headers, )
-    more_activity_data = response.json()
-    
-    return more_activity_data
-
-activity_id = 7924812139
-activity = laps_from_activity(activity_id, accessToken)
-
-# Save JSON file
-with open('activity_{}.json'.format(activity_id), 'w') as outfile:
-  json.dump(activity  , outfile)
-
-
+    # Save JSON file
+    with open('Marathons.json', 'a') as outfile:
+        json.dump(marathons, outfile)
